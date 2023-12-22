@@ -14,7 +14,7 @@ To run the project locally, follow these steps:
 1. Clone the repository to your local machine using the following command:
 
    ```
-   git clone https://github.com/natty6418/AimLabs_social_robot.git
+   git clone https://github.com/Lihanyiyi/AimLabs_social_robot.git
    ```
 
 2. Start the API server:
