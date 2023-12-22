@@ -89,7 +89,7 @@ The `Experiment` component handles data collection during the experiment trials,
 
 3. **Random Elements**: The component fetches random elements for each trial, such as shapes and colors, from an external API. This data is stored in the `randomElt` state, and the user is required to identify the displayed element correctly.
 
-4. **Destruction Data**: During the trials, random distractions are introduced using QTrobot, such as yawning, sneezing, or singing. The application records the timing of these distractions for each trial, allowing researchers to analyze the impact of interruptions on users' responses and gaze behavior.
+4. **Destraction Data**: During the trials, random distractions are introduced using QTrobot, such as yawning, sneezing, or singing. The application records the timing of these distractions for each trial, allowing researchers to analyze the impact of interruptions on users' responses and gaze behavior.
 
 All the recorded data, including raw gaze data, response time, random elements, and distraction data, is collected for each trial and can be analyzed after the experiment to gain insights into users' performance and behavior during the eye-tracking experiment. The raw gaze data is used to generate the heatmap, providing a visual representation of gaze concentration across all trials and helping to identify areas of interest and potential areas of improvement in the experimental design.
 
@@ -109,6 +109,10 @@ The `Heatmap` component generates a heatmap based on the raw gaze data collected
 
 - Before running the experiment, make sure to start the API server by following the instructions in the API section above.
 - The experiment requires access to the Webgazer API for data collection, so ensure that you have a compatible browser and a working webcam.
+- We have a heatmap.png which contains eye gaze data.
+- We have a radom_elements.txt for per participant per session, which records in each trial during the session, what is the current shape, current color, previous shape and previous color
+- We have a response time.txt for per participant per session, which records their reaction time and the evaluation [correct pass/click or incorrect pass/click]. Besides, it contains distraction data, which contains the distraction type as well as the corresponding timestamp and trial number, and start and end time. If no distraction happens, the timestamp and trial number are 0s, start and end time will always be recorded.
+- We have a raw gaze data.txt, which contains the coordinates of eye gaze and the duration of time when participant stick to that coordinate.
 
 ## API
 
