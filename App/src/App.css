@@ -20,7 +20,7 @@ body {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  marigin: 0px;
+  margin: 0px;
   padding: 10px 30px 10px 30px;
   /* Header background */
   background: rgba(11, 10, 10, 0.94);
@@ -98,7 +98,7 @@ li p {
   width: 100%;
   /* height: auto; */
   display: flex; 
-  align-item:center;
+  align-items:center;
   justify-content: center;
   flex-direction: column;
   margin: auto;
@@ -399,4 +399,20 @@ li p {
   line-height: normal;
   border: none;
   -webkit-text-fill-color: #FFFFFF;
+}
+.center-btn{
+  align-items: center;
+  width: 225px;
+  height: 115px;
+  border-radius: 10px;
+  background: #7F06F9;
+  color: #FFF;
+  font-size: 35px;
+  font-style: normal;
+  font-weight: 700;
+}
+.calibration-title{
+  margin-top:0;
+  padding-top:20px;
+  text-align: center;
 }

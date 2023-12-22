@@ -13,7 +13,7 @@ export default function Header(props) {
         endWebgazer(); // End the webgazer instance when navigating back to the home page
         navigate("/"); // Navigate back to the home page
     }
-
+   
     // Render the JSX representing the Header component
     return (
         <div className="navBar">
@@ -23,11 +23,12 @@ export default function Header(props) {
                     <li>Experiment ID: <p>{props.experimentNumber}</p></li>
                     <li>Session: <p>{props.sessionNumber}</p></li>
                     <li>Trial: <p>{props.trialNum}</p></li>
+                    <li>Target Type: <p>{props.targetType}</p></li>
                 </ul>
             </div>
-
             {/* Render the "Home" button */}
             <button className='home-btn' onClick={() => handleHomeButtonClick()}>Home</button>
         </div>
+        
     )
 }

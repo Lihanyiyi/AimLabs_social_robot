@@ -1,6 +1,10 @@
+// import { use } from '../../../api/routes/trialsAPI';
 import calculatePrecision from './precision_calculator';
 import swal from 'sweetalert';
+
+
 const webgazer = window.webgazer;
+
 export const handleCalibrationPointClick = (id, calibrationPoints, setCalibrationPoints, pointCalibrate, handlePointCaliberate, canvas, navigate) => { 
   const updatedPoints = calibrationPoints;
   let updatedPointCaliberate = pointCalibrate
@@ -65,10 +69,15 @@ export const handleCalibrationPointClick = (id, calibrationPoints, setCalibratio
                 ClearCanvas(canvas);
                 navigate('/experiment');
               } else {
+                // ClearCanvas(canvas);
+                //  ClearCalibration(setCalibrationPoints, handlePointCaliberate);
+                //  ShowCalibrationPoint();
                 webgazer.clearData();
-                ClearCalibration(setCalibrationPoints, handlePointCaliberate);
-                ClearCanvas(canvas);
-                ShowCalibrationPoint();
+                
+                // handleRestart(setCalibrationPoints, handlePointCaliberate, canvas);
+                window.location.reload(false);
+                
+                
               }
             });
           }, 5000);
@@ -85,6 +94,7 @@ export const handleCalibrationPointClick = (id, calibrationPoints, setCalibratio
         confirm: true,
       },
     }).then((isConfirm) => {
+      
       ShowCalibrationPoint();
     });
   };
@@ -97,6 +107,8 @@ export const handleCalibrationPointClick = (id, calibrationPoints, setCalibratio
   };
 
   const ClearCalibration = (setCalibrationPoints, handlePointCaliberate) => {
+    
+    
     document.querySelectorAll('.Calibration').forEach((i) => {
       i.style.backgroundColor = 'red';
       i.style.opacity = '0.2';

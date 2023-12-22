@@ -5,13 +5,13 @@ import "../App.css";
 import Header from "./Components/Header";
 import Main from "./Components/Main";
 import h337 from 'heatmap.js';
-import { startWebgazer } from "../utils/webgazerUtils";
+import { startWebgazer } from "../utils/webgazerUtils";  
 import { useNavigate } from 'react-router-dom';
 
 // Define the Experiment component
 export default function Experiment(props) {
   // Number of trials in the experiment
-  let numOfTrials = 5;
+  let numOfTrials = 120;
   // State variables to manage the experiment progress, response time, gaze data, and API response
   const [trial, setTrial] = useState(0);
   const [time, setTime] = useState(Date.now());
@@ -20,6 +20,8 @@ export default function Experiment(props) {
   const [distructionData, setDistructionData] = useState({ "startTime": 0, "endTime": 0, "yawn": 0, "sneeze": 0, "sing": 0 });
   const [apiResponse, setApiResponse] = useState({ response: "" });
   const [webgazerIsSet, setWebgazerIsSet] = useState(false);
+  const [start, setStart] = useState(true);
+  
 
   // Refs for random elements and heatmap data
   const randomEltArr = useRef([]);
@@ -36,7 +38,8 @@ export default function Experiment(props) {
   const lastGazeRef = useRef("");
   const webgazer = window.webgazer;
   window.saveDataAcrossSessions = true;
-
+  
+  
   // useEffect hook to check if the experiment trials are completed
   useEffect(() => {
     if (trial > numOfTrials) {
@@ -48,10 +51,15 @@ export default function Experiment(props) {
   // useEffect hook to fetch data from the API on component mount
   useEffect(() => {
     console.log("Fetching...");
-    fetchDataFromApi().then((trials) => {
-      setApiResponse({ response: trials }); // Save the fetched data in the state
-    });
-  }, []);
+    if(start){
+      fetchDataFromApi("shapes").then((trials) => {
+        setApiResponse({ response: trials }); // Save the fetched data in the state
+      });
+    }
+    // fetchDataFromApi("shapes").then((trials) => {
+    //   setApiResponse({ response: trials }); // Save the fetched data in the state
+    // });
+  }, [start]);
 
   // useEffect hook to initialize and remove webgazer, and set up the heatmap
   useEffect(() => {
@@ -72,13 +80,14 @@ export default function Experiment(props) {
 
     return () => {
       removeWebgazer();
+      
     }
   }, []);
 
   // Function to fetch data from the API
-  const fetchDataFromApi = async () => {
+  const fetchDataFromApi = async (targetType) => {
     try {
-      const response = await fetch(`http://localhost:9000/api/trials/${"shapes"}`);
+      const response = await fetch(`http://localhost:9000/api/trials/${targetType}`);
       const trials = await response.json();
       return trials;
     } catch (error) {
@@ -116,11 +125,11 @@ export default function Experiment(props) {
     // Create a download link for the image
     const downloadLink = newTab.document.createElement('a');
     downloadLink.href = URL.createObjectURL(blob);
-    downloadLink.download = `expt: ${props.experimentNumber} session ${props.sessionNumber}.png`; // Specify the filename for the downloaded image
+    downloadLink.download = `expt:_${props.experimentNumber}_session_${props.sessionNumber}.png`; // Specify the filename for the downloaded image
 
     // Simulate a click on the download link to trigger the download
     newTab.document.body.appendChild(downloadLink);
-    downloadLink.setAttribute("download", `expt: ${props.experimentNumber} session ${props.sessionNumber}.png`);
+    downloadLink.setAttribute("download", `expt:_${props.experimentNumber}_session_${props.sessionNumber}.png`);
     document.body.appendChild(downloadLink);
     downloadLink.click();
 
@@ -148,7 +157,9 @@ export default function Experiment(props) {
       webgazer.recordScreenPosition(event.clientX, event.clientY, 'click');
     });
     let height = window.innerHeight;
+    console.log("height: ",height/2);
     let width = window.innerWidth;
+    console.log("width: ",width/2);
     let container = document.getElementById('app');
     config.current.container = container;
   }
@@ -185,7 +196,7 @@ export default function Experiment(props) {
       ...prevResponseTime,
       [trial]: {
         Time: Math.floor(currentTime - time),
-        Wrong: wrong,
+        Evaluation: wrong,
       },
     }));
     setTime(Date.now());
@@ -197,13 +208,13 @@ export default function Experiment(props) {
 
   // Function to download the experiment data
   function download() {
-    // Download the response time and destruction data
+    // Download the response time and distruction data
     const responseTimeLink = document.createElement("a");
-    const responseTimeFile = new Blob([JSON.stringify(responseTime) + "\n\nDestruction Data:\n\n" + JSON.stringify(distructionData)], {
+    const responseTimeFile = new Blob([JSON.stringify(responseTime) + "\n\nDistraction Data:\n\n" + JSON.stringify(distructionData)], {
       type: "text/plain",
     });
     responseTimeLink.href = URL.createObjectURL(responseTimeFile);
-    responseTimeLink.download = `expt: ${props.experimentNumber} session ${props.sessionNumber} - Response Time.txt`;
+    responseTimeLink.download = `expt:_${props.experimentNumber}_session_${props.sessionNumber}_Response_Time.txt`;
     responseTimeLink.click();
     URL.revokeObjectURL(responseTimeLink.href);
 
@@ -213,7 +224,7 @@ export default function Experiment(props) {
       type: "text/plain",
     });
     randomElementsLink.href = URL.createObjectURL(randomElementsFile);
-    randomElementsLink.download = `expt: ${props.experimentNumber} session ${props.sessionNumber} - Random Elements.txt`;
+    randomElementsLink.download = `expt:_${props.experimentNumber}_session_${props.sessionNumber}_Random_Elements.txt`;
     randomElementsLink.click();
     URL.revokeObjectURL(randomElementsLink.href);
 
@@ -223,7 +234,7 @@ export default function Experiment(props) {
       type: "text/plain",
     });
     rawGazeDataLink.href = URL.createObjectURL(rawGazeDataFile);
-    rawGazeDataLink.download = `expt: ${props.experimentNumber} session ${props.sessionNumber} - Raw Gaze Data.txt`;
+    rawGazeDataLink.download = `expt:_${props.experimentNumber}_session_${props.sessionNumber}_Raw_Gaze_Data.txt`;
     rawGazeDataLink.click();
     URL.revokeObjectURL(rawGazeDataLink.href);
   }
@@ -232,7 +243,7 @@ export default function Experiment(props) {
   function handleWrong(w) {
     setWrong(w);
   }
-
+  
   // Render the JSX representing the Experiment component
   return (
     <div id="app" className="app">
@@ -245,8 +256,11 @@ export default function Experiment(props) {
         setSessionNumber={props.setSessionNumber}
         setTargetType={props.setTargetType}
       />
-      { (trial < numOfTrials + 1 ? (
+      { (trial < numOfTrials+1  ? (
         <Main
+          experimentNumber={props.experimentNumber}
+          sessionNumber={props.sessionNumber}
+          targetType={props.targetType}
           setTime={setTime}
           responseTime={responseTime}
           ResponseTime={ResponseTime}
@@ -257,20 +271,45 @@ export default function Experiment(props) {
           trials={apiResponse.response}
           webgazerIsSet={webgazerIsSet}
         />
-      ) : (
+
+      ) : parseInt(props.sessionNumber )=== 8 ?( // if the session number is 8, then end the experiment，the application will not close, but it will show information below
         <div className="end-trail">
-          <h1>End of Trial.</h1>        
+          <h1><font color="white">Thank you for your participation!</font></h1>
+          <h1><font color="white">Please feel free to leave!</font></h1>
+          </div>
+        ):(
+        <div className="end-trail">
+          <h1>End of Session.</h1>        
           <button className="colors-btn" onClick={() => {
-            props.setSessionNumber((prev) => (parseInt(prev) + 1))
-            props.setTargetType((prev) => {
-              return prev === "shapes" ? "colors" : "shapes"
-            })
+            if (parseInt(props.sessionNumber )=== 8) { //ignore the session number ===8 condition
+              window.close();
+            } 
+            else{
+              props.setSessionNumber((prev) => (parseInt(prev) + 1)) // if the session number is not 8, then go to next session
+              props.setTargetType((prev) => { // change the target type
+              return ((parseInt(props.sessionNumber)===1) || (parseInt(props.sessionNumber)===6)||(parseInt(props.sessionNumber)===7)) ? "shapes" : "colors"
+              })
             // navigate("/experiment")
-            setTrial(0)
-            fetchDataFromApi().then((trials) => {
-              setApiResponse({response: trials}); // Save the fetched data in the state
-            });
-            heatmapData.current = []
+              setTrial(0)
+              setStart(false)
+              if((parseInt(props.sessionNumber)===1) || (parseInt(props.sessionNumber)===6)||(parseInt(props.sessionNumber)===7)){
+                fetchDataFromApi("shapes").then((trials) => { 
+                  setApiResponse({response: trials}); // Save the fetched data in the state
+                  heatmapData.current = []
+              });
+              }
+              else{
+                fetchDataFromApi("colors").then((trials) => {
+                  setApiResponse({response: trials}); // Save the fetched data in the state
+                  heatmapData.current = []
+              });
+              }
+              // fetchDataFromApi().then((trials) => {
+              //   setApiResponse({response: trials}); // Save the fetched data in the state
+              // });
+              // heatmapData.current = []
+            }
+            
           }}>
             Next
           </button>
