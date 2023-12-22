@@ -1,7 +1,7 @@
 
 ## Overview
 
-This repository contains a React-based CPT experiment application that collects data on users' gaze and response time during a series of trials. The experiment involves identifying specific shapes and colors displayed on the screen. The application utilizes the webgazer.js library for eye tracking and provides a visual representation of gaze data through a heatmap.js component. It also interacts with QTrobot via QTrobot's ROS API to introduce random distructions during the trials.
+This repository contains a React-based CPT experiment application that collects data on users' gaze and response time during a series of trials. The experiment involves identifying specific shapes and colors displayed on the screen. The application utilizes the webgazer.js library for eye tracking and provides a visual representation of gaze data through a heatmap.js component. It also interacts with QTrobot via QTrobot's ROS API to introduce random distractions during the trials.
 
 ## Prerequisites
 
@@ -59,7 +59,7 @@ The `App` component serves as the main entry point of the application. It define
 
 ### 2. `Experiment.js`
 
-The `Experiment` component is responsible for managing the experiment trials, recording user responses, and displaying the heatmap of gaze data. It uses several state variables to keep track of the trial number, response time, random elements, distruction data, and webgazer setup.
+The `Experiment` component is responsible for managing the experiment trials, recording user responses, and displaying the heatmap of gaze data. It uses several state variables to keep track of the trial number, response time, random elements, distraction data, and webgazer setup. The ending information of each session is implemented here.
 
 ### 3. `Header.js`
 
@@ -67,7 +67,7 @@ The `Header` component represents the header section of the application, display
 
 ### 4. `Main.js`
 
-The `Main` component handles the main part of the experiment, where the trials are conducted. It includes functions to start the trial, handle user responses, and introduce random distructions using QTrobot. The component also displays the shapes and colors for each trial, as well as a visual timer.
+The `Main` component handles the main part of the experiment, where the trials are conducted. It includes functions to start the trial, handle user responses, and introduce random distractions using QTrobot. The component also displays the shapes and colors for each trial, as well as a visual timer.
 
 ### 5. `Calibration.js`
 
@@ -83,19 +83,19 @@ The eye tracking functionality is implemented using the `webgazer.js` library. T
 
 The `Experiment` component handles data collection during the experiment trials, including raw gaze data (coordinates) in addition to other metrics:
 
-1. **Raw Gaze Data (Coordinates)**: During each trial, the application records the raw gaze data, which consists of the (x, y) coordinates of the user's gaze on the screen. The raw gaze data is collected continuously throughout the trial and is stored in the `heatmapData` array. The `eyeListener` function is responsible for capturing and updating the gaze data at regular intervals.
+1. **Raw Gaze Data (Coordinates)**: During each trial, the application records the raw gaze data, which consists of the (x, y) coordinates of the user's gaze on the screen. The raw gaze data is collected continuously throughout the trial and is stored in the `heatmapData` array. The `eyeListener` function is responsible for capturing and updating the gaze data at regular intervals. The (924,484）is the central point of the screen.
 
 2. **Response Time**: The time taken by the user to respond to each trial stimulus is recorded as the time difference between the presentation of the stimulus and the user's response. It provides insights into how quickly users process and react to the presented stimuli.
 
 3. **Random Elements**: The component fetches random elements for each trial, such as shapes and colors, from an external API. This data is stored in the `randomElt` state, and the user is required to identify the displayed element correctly.
 
-4. **Destruction Data**: During the trials, random distructions are introduced using QTrobot, such as yawning, sneezing, or singing. The application records the timing of these distructions for each trial, allowing researchers to analyze the impact of interruptions on users' responses and gaze behavior.
+4. **Destruction Data**: During the trials, random distractions are introduced using QTrobot, such as yawning, sneezing, or singing. The application records the timing of these distractions for each trial, allowing researchers to analyze the impact of interruptions on users' responses and gaze behavior.
 
-All the recorded data, including raw gaze data, response time, random elements, and distruction data, is collected for each trial and can be analyzed after the experiment to gain insights into users' performance and behavior during the eye-tracking experiment. The raw gaze data is used to generate the heatmap, providing a visual representation of gaze concentration across all trials and helping to identify areas of interest and potential areas of improvement in the experimental design.
+All the recorded data, including raw gaze data, response time, random elements, and distraction data, is collected for each trial and can be analyzed after the experiment to gain insights into users' performance and behavior during the eye-tracking experiment. The raw gaze data is used to generate the heatmap, providing a visual representation of gaze concentration across all trials and helping to identify areas of interest and potential areas of improvement in the experimental design.
 
-#### Distructions
+#### Distractions
 
-The application interacts with QTrobot to introduce random distructions during the experiment trials. QTrobot is a social robot that can perform various gestures and expressions. The `Main` component includes functions to handle random distructions such as yawning, sneezing, and singing. These distructions are triggered at random intervals to introduce interruptions during the trials and simulate real-world distractions. These distructions are implemented using the `QTrobot` API.
+The application interacts with QTrobot to introduce random distractions during the experiment trials. QTrobot is a social robot that can perform various gestures and expressions. The `Main` component includes functions to handle random distractions such as yawning, sneezing, and singing. These distractions are triggered at random intervals to introduce interruptions during the trials and simulate real-world distractions. These distructions are implemented using the `QTrobot` API.
 
 #### Visual Stimuli
 
@@ -126,7 +126,14 @@ The API uses the following dependencies:
 
 Please make sure to start the API server before running the React experiment to ensure that the experiment can fetch the necessary data from the API.
 
+## Robot camera recording
+
+There are 3 py files for recording people's emotion and live stream video when doing social interaction.
+1. `qt_face_recognition_annot.py`: This is for showing the emotion and facial recognition box in the video, as well as saving emotion probabilities to a csv file
+2. `qt_face_recognition_no_annot.py`: This is for saving emotion probabilities to a csv file, but emotion and facial recognition box is not shown in the video.
+3. `qt_face_recognition_no.py`: This is the pure live stream video without emotion probabilities data being saved.
+Please run the file accordingly based on your demand.
 
 ## Author
 
-- Natty Metekie (nm3833@nyu.edu)
+- Natty Metekie (nm3833@nyu.edu), modified and updated by Lihan Feng (lf2383@nyu.edu)
